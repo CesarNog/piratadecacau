@@ -1,10 +1,11 @@
+
 #!/bin/bash
 
-# Start n8n in background
+echo "🟢 Starting n8n in the background..."
 n8n start &
 
-# Wait a bit for n8n to be ready
+echo "⏳ Waiting for n8n to initialize..."
 sleep 10
 
-# Start WhatsApp watcher
+echo "🟢 Starting WhatsApp watcher..."
 node /app/scripts/index.js

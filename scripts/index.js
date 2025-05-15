@@ -1,3 +1,4 @@
+
 const crypto = require('crypto');
 const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const fs = require("fs");
@@ -6,7 +7,7 @@ const FormData = require("form-data");
 const path = require("path");
 
 const MEDIA_FOLDER = path.join(__dirname, "../media");
-const N8N_WEBHOOK = "http://localhost:5678/webhook/whatsapp-media"; // Replace with your n8n instance URL
+const N8N_WEBHOOK = process.env.N8N_WEBHOOK || "http://localhost:5678/webhook/whatsapp-media";
 
 (async () => {
   const { state, saveCreds } = await useMultiFileAuthState("auth");

@@ -1,6 +1,7 @@
+
 FROM node:18
 
-# Install n8n
+# Install n8n and dependencies
 RUN apt update && apt install -y python3 make g++ curl
 RUN npm install --global n8n
 
