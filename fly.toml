@@ -1,0 +1,38 @@
+# fly.toml app configuration file generated for piratadecacau-wild-violet-8140 on 2025-05-15T12:43:25+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'piratadecacau-wild-violet-8140'
+primary_region = 'mad'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  IG_PASSWORD = 'your_ig_password'
+  IG_USERNAME = 'your_ig_username'
+  N8N_BASIC_AUTH_ACTIVE = 'true'
+  N8N_BASIC_AUTH_PASSWORD = 'your_secure_password'
+  N8N_BASIC_AUTH_USER = 'admin'
+  N8N_HOST = "0.0.0.0"
+  N8N_WEBHOOK = 'https://piratadecacau.fly.dev/webhook/whatsapp-media'
+  NODE_ENV = 'production'
+  WEBHOOK_TUNNEL_URL = "https://piratadecacau.fly.dev"
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 5678
+
+  [[services.ports]]
+    port = 80
+    handlers = ['http']
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

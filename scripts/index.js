@@ -1,4 +1,4 @@
-
+const crypto = require('crypto');
 const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const fs = require("fs");
 const axios = require("axios");
