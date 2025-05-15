@@ -3,7 +3,6 @@ FROM node:18
 WORKDIR /app
 
 COPY scripts/ /app/scripts/
-COPY media/ /app/media/
 COPY .env /app/.env
 
 WORKDIR /app/scripts
