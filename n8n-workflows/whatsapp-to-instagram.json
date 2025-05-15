@@ -1,0 +1,101 @@
+{
+  "name": "whatsapp-to-instagram",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "whatsapp-media",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "whatsapp-media"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "binaryData": true,
+        "fileName": "={{$binary.file.fileName}}",
+        "fileMimeType": "={{$binary.file.mimeType}}",
+        "parents": [
+          "FOLDER_ID_GOES_HERE"
+        ]
+      },
+      "name": "Upload to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        300,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "1",
+          "name": "Google Drive OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "sheetId": "SHEET_ID_GOES_HERE",
+        "range": "Sheet1!A:C",
+        "options": {
+          "valueRenderMode": "UNFORMATTED_VALUE",
+          "insertDataOption": "INSERT_ROWS"
+        },
+        "columns": [
+          "Caption",
+          "Media URL",
+          "Status"
+        ],
+        "values": [
+          "={{$json.caption}}",
+          "={{$json.webViewLink}}",
+          "pending"
+        ]
+      },
+      "name": "Add to Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets OAuth"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Upload to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Drive": {
+      "main": [
+        [
+          {
+            "node": "Add to Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

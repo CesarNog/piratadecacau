@@ -1,0 +1,121 @@
+{
+  "name": "instagram-story-scheduler",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": [
+          {
+            "mode": "everyX",
+            "value": 3,
+            "unit": "hours"
+          }
+        ]
+      },
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "sheetId": "SHEET_ID_GOES_HERE",
+        "range": "StoryPosts!A:B"
+      },
+      "name": "Read Story Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        300,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "node /data/scripts/uploadToInstagramStory.js /data/media/story-temp.jpg",
+        "options": {}
+      },
+      "name": "Upload to Story",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "sheetId": "SHEET_ID_GOES_HERE",
+        "range": "StoryPosts!B:B",
+        "valueInputMode": "USER_ENTERED",
+        "options": {},
+        "cellDataUi": {
+          "cellDataValues": [
+            {
+              "range": "={{ $json[\"rowNumber\"] }}",
+              "value": "posted"
+            }
+          ]
+        }
+      },
+      "name": "Mark as Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets OAuth"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Story Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Story Queue": {
+      "main": [
+        [
+          {
+            "node": "Upload to Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Story": {
+      "main": [
+        [
+          {
+            "node": "Mark as Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

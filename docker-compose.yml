@@ -1,0 +1,30 @@
+
+version: '3.8'
+
+services:
+  whatsapp-watcher:
+    image: ghcr.io/cesarnog/piratadecacau-watcher:latest
+    container_name: piratadecacau-watcher
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./media:/app/media
+      - ./scripts:/app/scripts
+    working_dir: /app/scripts
+
+  n8n:
+    image: n8nio/n8n
+    container_name: piratadecacau-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=your_secure_password
+      - N8N_HOST=n8n.local
+      - WEBHOOK_TUNNEL_URL=http://localhost:5678
+      - NODE_ENV=production
+    volumes:
+      - ~/.n8n:/home/node/.n8n
